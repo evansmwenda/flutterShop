@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_shop/Shop.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:simple_animations/simple_animations.dart';
 
 void main() => runApp(MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -29,7 +32,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _scaleAnimation = Tween<double>(
       begin: 1.0,
       end: 30.0
-    ).animate(_scaleController);
+    ).animate(_scaleController)..addStatusListener((status){
+      if(status == AnimationStatus.completed){
+        Navigator.push(context, PageTransition(type: PageTransitionType.fade,child: Shop(),),);
+      }
+
+    });
   }
 
   @override
@@ -53,6 +61,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
+                F(1,),
                 Text(
                   "Brand New Perspective",
                   style: TextStyle(
@@ -79,19 +88,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       _scaleController.forward();
                     });
                   },
-                  child:Container(
-                    height: 50,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(50),
+                  child: AnimatedBuilder(
+                    animation: _scaleController,
+                    builder: (context, child) => Transform.scale(
+                      scale: _scaleAnimation.value,
+                      child: Container(
+                        height: 50,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        child: Center(
+                          child: hide == false ? Text(
+                            "Get start",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ) : Container(),),
+                      ),
                     ),
-                    child: Center(
-                        child: hide == false ? Text(
-                          "Get start",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ) : Container(),),
                   ),
                 ),
                 SizedBox(
@@ -116,6 +131,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+enum _AniProps { opacity, translateX }
+
+class FadeIn extends StatelessWidget {
+  final double delay;
+  final Widget child;
+
+  FadeIn(this.delay, this.child);
+
+  @override
+  Widget build(BuildContext context) {
+    final tween = MultiTween<_AniProps>()
+      ..add(_AniProps.opacity, 0.0.tweenTo(1.0))
+      ..add(_AniProps.translateX, 130.0.tweenTo(0.0));
+
+    return PlayAnimation<MultiTweenValues<_AniProps>>(
+      delay: (300 * delay).round().milliseconds,
+      duration: Duration(milliseconds: 500),
+      tween: tween,
+      child: child,
+      builder: (context, child, value) => Opacity(
+        opacity: value.get(_AniProps.opacity),
+        child: Transform.translate(
+          offset: Offset(value.get(_AniProps.translateX), 0),
+          child: child,
         ),
       ),
     );
