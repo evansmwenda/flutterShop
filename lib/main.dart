@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_shop/Shop.dart';
+import 'package:flutter_shop/animations/FadeAnimation.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:simple_animations/simple_animations.dart';
 
@@ -19,25 +20,26 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   bool hide = false;
 
-
   @override
   void initState() {
     super.initState();
 
-    _scaleController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 500)
-    );
+    _scaleController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
 
-    _scaleAnimation = Tween<double>(
-      begin: 1.0,
-      end: 30.0
-    ).animate(_scaleController)..addStatusListener((status){
-      if(status == AnimationStatus.completed){
-        Navigator.push(context, PageTransition(type: PageTransitionType.fade,child: Shop(),),);
-      }
-
-    });
+    _scaleAnimation =
+        Tween<double>(begin: 1.0, end: 30.0).animate(_scaleController)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              Navigator.push(
+                context,
+                PageTransition(
+                  type: PageTransitionType.fade,
+                  child: Shop(),
+                ),
+              );
+            }
+          });
   }
 
   @override
@@ -61,27 +63,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                F(1,),
-                Text(
-                  "Brand New Perspective",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 40,
+                FadeAnimation(
+                  1.2,
+                  Text(
+                    "Brand New Perspective",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                    ),
                   ),
                 ),
                 SizedBox(height: 20.0),
-                Text(
+                FadeAnimation(1.4,Text(
                   "Let's start with our summer collection",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20,
                   ),
-                ),
+                ),),
+
                 SizedBox(
                   height: 100.0,
                 ),
                 InkWell(
-                  onTap: (){
+                  onTap: () {
                     setState(() {
                       hide = true;
 
@@ -92,27 +97,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     animation: _scaleController,
                     builder: (context, child) => Transform.scale(
                       scale: _scaleAnimation.value,
-                      child: Container(
+                      child: FadeAnimation(
+                        1.6,Container(
                         height: 50,
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(50),
                         ),
                         child: Center(
-                          child: hide == false ? Text(
-                            "Get start",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ) : Container(),),
-                      ),
+                          child: hide == false
+                              ? Text(
+                                  "Get start",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              : Container(),
+                        ),
+                      ),),
                     ),
                   ),
                 ),
                 SizedBox(
                   height: 30,
                 ),
-                Container(
+            FadeAnimation(
+              1.8,Container(
                   height: 50,
                   decoration: BoxDecoration(
                     border: Border.all(color: Colors.white),
@@ -126,8 +136,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       fontWeight: FontWeight.bold,
                     ),
                   )),
-                ),
-                SizedBox(height: 30,)
+                ),),
+                SizedBox(
+                  height: 30,
+                )
               ],
             ),
           ),
@@ -137,32 +149,32 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 }
 
-enum _AniProps { opacity, translateX }
-
-class FadeIn extends StatelessWidget {
-  final double delay;
-  final Widget child;
-
-  FadeIn(this.delay, this.child);
-
-  @override
-  Widget build(BuildContext context) {
-    final tween = MultiTween<_AniProps>()
-      ..add(_AniProps.opacity, 0.0.tweenTo(1.0))
-      ..add(_AniProps.translateX, 130.0.tweenTo(0.0));
-
-    return PlayAnimation<MultiTweenValues<_AniProps>>(
-      delay: (300 * delay).round().milliseconds,
-      duration: Duration(milliseconds: 500),
-      tween: tween,
-      child: child,
-      builder: (context, child, value) => Opacity(
-        opacity: value.get(_AniProps.opacity),
-        child: Transform.translate(
-          offset: Offset(value.get(_AniProps.translateX), 0),
-          child: child,
-        ),
-      ),
-    );
-  }
-}
+//enum _AniProps { opacity, translateX }
+//
+//class FadeIn extends StatelessWidget {
+//  final double delay;
+//  final Widget child;
+//
+//  FadeIn(this.delay, this.child);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    final tween = MultiTween<_AniProps>()
+//      ..add(_AniProps.opacity, 0.0.tweenTo(1.0))
+//      ..add(_AniProps.translateX, 130.0.tweenTo(0.0));
+//
+//    return PlayAnimation<MultiTweenValues<_AniProps>>(
+//      delay: (300 * delay).round().milliseconds,
+//      duration: Duration(milliseconds: 500),
+//      tween: tween,
+//      child: child,
+//      builder: (context, child, value) => Opacity(
+//        opacity: value.get(_AniProps.opacity),
+//        child: Transform.translate(
+//          offset: Offset(value.get(_AniProps.translateX), 0),
+//          child: child,
+//        ),
+//      ),
+//    );
+//  }
+//}
